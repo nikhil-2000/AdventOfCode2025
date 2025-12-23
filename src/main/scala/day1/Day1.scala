@@ -4,7 +4,7 @@ import scala.io.Source
 import scala.util.{Try, Using}
 import Day.DayBase
 
-class Day1 extends DayBase {
+object Day1 extends DayBase {
 
   private def directionMultiplier(line: String): Int =
     line.headOption match
@@ -40,7 +40,7 @@ class Day1 extends DayBase {
       }
       ._2
 
-  def main(): Unit =
+  def mainDay1(): Unit =
     val day1ExamplesLines = loadLines(filename(1, true))
     val day1Lines = loadLines(filename(1, false))
     println(part1(day1ExamplesLines))
@@ -48,7 +48,3 @@ class Day1 extends DayBase {
     println(part2(day1ExamplesLines))
     println(part2(day1Lines))
 }
-
-object Day1:
-  def main(args: Array[String]): Unit =
-    new Day1().main()

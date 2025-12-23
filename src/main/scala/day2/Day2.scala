@@ -1,58 +1,45 @@
 package day2
 
-import scala.io.Source
-import scala.util.{Try, Using}
+import scala.util.Try
 import Day.DayBase
+import scala.annotation.tailrec
+import scala.math.BigInt
 
-class Day2 extends DayBase {
+object Day2 extends DayBase {
 
-  def toNumbers(range: String) =
-    val lowHigh = range.split('-')
-    val lowString = lowHigh.head
-    val highString = lowHigh.drop(1).head
-    val low = lowString.toLong
-    val high = highString.toLong + 1
-    (low until high).map(_.toString)
-  
-  def isInvalid(num: String): Boolean = 
-      val l = num.length();
-      if (l % 2 != 0) return false
-      val parts = num.grouped(l / 2).toList
-      val start = parts.head;
-      val end = parts.drop(1).head;
-      start == end;
+  private def toNumbers(range: String): Seq[String] =
+    val Array(lowS, highS) = range.split('-')
+    val low = lowS.toLong
+    val high = highS.toLong
+    (low to high).map(_.toString)
 
-  def isInvalid_2(num: String): Boolean = 
-    val lengths = 1 until num.length()
-    lengths.exists(i => restMatches(num.take(i), num.drop(i)))
+  private def parseRanges(lines: List[String]): Seq[String] =
+    lines.headOption
+      .map(_.split(',').toSeq.flatMap(toNumbers))
+      .getOrElse(Seq.empty)
 
-  def restMatches(pattern: String, rest: String): Boolean =
-    if (rest.length < pattern.length) false
-    else if (rest.startsWith(pattern)) {
-      val remaining = rest.substring(pattern.length)
-      if (remaining.isEmpty) true else restMatches(pattern, remaining)
-    } else false
-  
-  def part1(line: List[String]) = {
-    val ranges = line.head.split(",")
-    val allNums = ranges.flatMap(toNumbers(_))
-    val invalids = allNums.filter(isInvalid).toList.map(_.toLong)
-    println(invalids.sum)
-  }
+  private def restMatches(pattern: String, rest: String): Boolean =
+    val l = pattern.length
+    (rest.length % l == 0) && (rest == pattern.repeat(rest.length / l))
 
-  def part2(line: List[String]) = {
-    val ranges = line.head.split(",")
-    val allNums = ranges.flatMap(toNumbers(_))
-    val invalids = allNums.filter(isInvalid_2).toList.map(_.toLong)
-    println(invalids.sum)
-  }
+  private def isInvalid(num: String): Boolean =
+    val l = num.length
+    l % 2 == 0 && num.take(l / 2) == num.drop(l / 2)
 
-  def main(): Unit =
-    val day2ExamplesLines = loadLines(filename(2, true))
-    val day2Lines = loadLines(filename(2, false))
+  private def isInvalid2(num: String): Boolean =
+    (1 until num.length).exists(i => restMatches(num.take(i), num.drop(i)))
 
-    part1(day2ExamplesLines)
-    part1(day2Lines)
-    part2(day2ExamplesLines)
-    part2(day2Lines)
+  def part1(lines: List[String]): BigInt =
+    parseRanges(lines).filter(isInvalid).map(BigInt(_)).sum
+
+  def part2(lines: List[String]): BigInt =
+    parseRanges(lines).filter(isInvalid2).map(BigInt(_)).sum
+
+  def mainDay2(): Unit =
+    val exampleLines = loadLines(filename(2, true))
+    val inputLines = loadLines(filename(2, false))
+    println(part1(exampleLines))
+    println(part1(inputLines))
+    println(part2(exampleLines))
+    println(part2(inputLines))
 }

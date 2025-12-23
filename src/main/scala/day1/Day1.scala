@@ -2,13 +2,9 @@ package day1
 
 import scala.io.Source
 import scala.util.{Try, Using}
+import Day.DayBase
 
-object Day1:
-  private def tryToInt(s: String): Option[Int] =
-    Try(s.toInt).toOption
-
-  private def loadLines(resource: String): List[String] =
-    Using.resource(Source.fromResource(resource))(_.getLines().toList)
+class Day1 extends DayBase {
 
   private def directionMultiplier(line: String): Int =
     line.headOption match
@@ -44,21 +40,15 @@ object Day1:
       }
       ._2
 
-  def filename(example: Boolean) =
-    example match
-      case true  => "day1 example.txt"
-      case false => "day1.txt"
+  def main(): Unit =
+    val day1ExamplesLines = loadLines(filename(1, true))
+    val day1Lines = loadLines(filename(1, false))
+    println(part1(day1ExamplesLines))
+    println(part1(day1Lines))
+    println(part2(day1ExamplesLines))
+    println(part2(day1Lines))
+}
 
-  def part1ForFile(example: Boolean = false) = part1(
-    loadLines(filename(example))
-  )
-  
-  def part2ForFile(example: Boolean = false) = part2(
-    loadLines(filename(example))
-  )
-
+object Day1:
   def main(args: Array[String]): Unit =
-    println(part1ForFile(true))
-    println(part1ForFile(false))
-    println(part2ForFile(true))
-    println(part2ForFile(false))
+    new Day1().main()

@@ -1,4 +1,3 @@
-package day2
 
 import scala.util.Try
 import Day.DayBase
